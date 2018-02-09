@@ -1,0 +1,12 @@
+{
+  "name": "tiny-hippo-simulator-2018",
+  "version": "0.0.0",
+  "description": "A game where you just live in a tiny coastal village and go shopping for food every morning and can nap.",
+  "main": "index.js",
+  "repository": "https://github.com/henrahmagix/tiny-hippo-simulator-2018",
+  "author": "Henry Blyth <blyth.henry@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "phaser": "^2.6.2"
+  }
+}
