@@ -1,4 +1,10 @@
-// TODO: when phaser 3 is released, it will work with webpack so other imports won't be needed.
-import 'pixi'
-import 'p2'
-import 'phaser'
+import './lib'
+
+const id = 'game';
+document.body.appendChild(function (id) {
+	const div = document.createElement('div');
+	div.id = id;
+	return div;
+}(id))
+
+const game = new Phaser.Game(848, 450, Phaser.AUTO, id);
