@@ -24,4 +24,4 @@ $(GH_PAGES):
 deploy: $(GH_PAGES)
 deploy:
 	rsync -avz --delete --exclude=/.git public/ $(GH_PAGES)
-	cd $(GH_PAGES) && git add --all . && git commit -m 'Update $$(date "+%Y-%m-%d %H:%M:%S")' && git push
+	cd $(GH_PAGES) && git add --all . && git commit -m "Update $$(date "+%Y-%m-%d %H:%M:%S")" && git push
