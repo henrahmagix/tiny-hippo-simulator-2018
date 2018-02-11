@@ -204,7 +204,7 @@ function create() {
 	const buttonStyle = Object.assign({}, style, {
 		fontSize: '60px'
 	});
-	const buttonLeft = game.add.text(25, game.world.centerY, "<", buttonStyle);
+	const buttonLeft = game.add.text(25, 450, "<", buttonStyle);
 	buttonLeft.visible = false;
 	buttonLeft.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
 	buttonLeft.anchor.set(0.5);
@@ -213,7 +213,7 @@ function create() {
 	buttonLeft.events.onInputUp.add(() => moveLeft = false);
 	buttons.push(buttonLeft);
 
-	const buttonRight = game.add.text(game.width - 25, game.world.centerY, ">", buttonStyle);
+	const buttonRight = game.add.text(game.width - 25, 450, ">", buttonStyle);
 	buttonRight.visible = false;
 	buttonRight.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
 	buttonRight.anchor.set(0.5);
