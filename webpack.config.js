@@ -17,7 +17,7 @@ module.exports = {
 	entry: `${APP_DIR}/index.js`,
 	output: {
 		path: BUILD_DIR,
-		filename: 'assets/js/bundle.js',
+		filename: 'js/bundle.js',
 	},
 	resolve: {
 		extensions: ['.js', '.jsx', '.json'],
@@ -38,6 +38,17 @@ module.exports = {
 				exclude: /node_modules/,
 				use: ['babel-loader'],
 				include: APP_DIR,
+			},
+			{
+				test: /\.(png|jpe?g|svg)$/,
+				use: [{
+					loader: 'url-loader',
+					options: {
+						// Convert images < 8kb to base64 strings
+						limit: 8000,
+						name: 'images/[hash]-[name].[ext]'
+					}
+				}]
 			},
 			// TODO: when phaser 3 is released, it will work with webpack so other imports won't be needed.
 			// https://github.com/photonstorm/phaser/issues/2762
