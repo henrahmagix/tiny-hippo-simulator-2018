@@ -14,7 +14,7 @@ build: webpack
 
 .PHONY: serve
 serve:
-	$$(npm bin)/webpack-dev-server
+	$$(npm bin)/webpack-dev-server --host 0.0.0.0
 
 GH_PAGES := .gh-pages
 $(GH_PAGES):
