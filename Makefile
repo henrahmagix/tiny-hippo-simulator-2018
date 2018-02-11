@@ -23,5 +23,7 @@ $(GH_PAGES):
 .PHONY: deploy
 deploy: $(GH_PAGES)
 deploy:
-	rsync -avz --delete --exclude=/.git public/ $(GH_PAGES)
-	cd $(GH_PAGES) && git add --all . && git commit -m "Update $$(date "+%Y-%m-%d %H:%M:%S")" && git push
+	NODE_ENV=production $$(npm bin)/webpack --progress --output-path dist
+	rsync -avz --delete --exclude=/.git dist/ $(GH_PAGES)
+	cd $(GH_PAGES) && git add --all . && git diff-index --quiet HEAD -- && echo "Nothing to deploy" || (git commit -m "Update $$(date "+%Y-%m-%d %H:%M:%S")" && git push)
+	rm -r dist

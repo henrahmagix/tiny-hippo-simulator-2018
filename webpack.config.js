@@ -7,6 +7,7 @@ const PHASER_DIR = path.resolve(__dirname, 'node_modules', 'phaser');
 const NODE_ENV = process.env.NODE_ENV;
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 function noop() {};
 function forProduction(plugin) {
@@ -83,7 +84,10 @@ module.exports = {
 		],
 	},
 	plugins: [
-		forProduction(new webpack.optimize.UglifyJsPlugin()),
+		forProduction(new UglifyJsPlugin({
+			parallel: true,
+			cache: path.join(__dirname, 'webpack-cache/uglify'),
+		})),
 		new HtmlWebpackPlugin({
 			hash: true,
 			path: BUILD_DIR,
