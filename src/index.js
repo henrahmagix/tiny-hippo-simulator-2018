@@ -146,7 +146,12 @@ function addWalking(x, y, name) {
 	return sprite;
 }
 
+const SPEED_SLOW = 0;
+const SPEED_FAST = 1;
+
 let text;
+let speed = SPEED_SLOW;
+let speeds = [];
 
 function create() {
 	game.time.advancedTiming = true;
@@ -176,6 +181,19 @@ function create() {
 	text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
 	text.setTextBounds(0, 100, game.width, 100);
 	text.visible = false;
+
+	const speedStyle = Object.assign({}, style, {
+		fontSize: '24px'
+	});
+	const fast = game.add.text(game.world.centerX + 100, 400, "Go faster?", speedStyle);
+	fast.visible = false;
+	fast.anchor.set(0.5);
+	fast.inputEnabled = true;
+	fast.events.onInputDown.add(text => {
+		speed = SPEED_FAST;
+		text.text = 'Yay!'
+	});
+	speeds.push(fast);
 }
 
 const CHARACTER_CHOICE = 0;
@@ -186,6 +204,7 @@ function showCharacterChoice() {
 	showing = CHARACTER_CHOICE;
 	showBg(-1);
 	text.visible = true;
+	speeds.forEach(s => s.visible = true);
 	allCharacters.right.forEach(c => c.visible = true);
 }
 
@@ -193,6 +212,7 @@ function showGame() {
 	showing = GAME;
 	showBg(showing - 1);
 	text.visible = false;
+	speeds.forEach(s => s.visible = false);
 	allCharacters.right.forEach(c => {
 		c.visible = false;
 		c.animations.stop();
@@ -252,11 +272,15 @@ function update() {
 			axis = 'y';
 		}
 		let movement = `${axis}Fps`;
+		let increment = CHARACTER_MOVE_INCREMENT;
+		if (speed === SPEED_FAST) {
+			increment *= 50;
+		}
 		if (is(Phaser.Keyboard.LEFT)) {
-			player[movement] = player[movement] - CHARACTER_MOVE_INCREMENT;
+			player[movement] = player[movement] - increment;
 			walk(axis, movement);
 		} else if (is(Phaser.Keyboard.RIGHT)) {
-			player[movement] = player[movement] + CHARACTER_MOVE_INCREMENT;
+			player[movement] = player[movement] + increment;
 			walk(axis, movement);
 		}
 	}
