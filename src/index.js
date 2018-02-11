@@ -1,8 +1,11 @@
 import './lib';
 import './index.css';
 
+// Backgrounds from https://twitter.com/sylvainsarrailh/status/961654163833806853
 import coastal1 from './images/backgrounds/coastal1.jpg';
 import coastal2 from './images/backgrounds/coastal2.jpg';
+
+// Hippo sprites from https://forums.rpgmakerweb.com/index.php?threads/whtdragons-animals-and-running-horses-now-with-more-dragons.53552/
 import hippo1down from './images/sprites/hippo/hippo1-down.png';
 import hippo2down from './images/sprites/hippo/hippo2-down.png';
 import hippo3down from './images/sprites/hippo/hippo3-down.png';
