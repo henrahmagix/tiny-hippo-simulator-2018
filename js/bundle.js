@@ -223,6 +223,9 @@ const game = new Phaser.Game(1108, 600, Phaser.AUTO, id, {
 });
 
 function preload() {
+	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+	game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
+
 	game.load.image('page1', __WEBPACK_IMPORTED_MODULE_2__images_backgrounds_coastal1_jpg___default.a);
 	game.load.image('page2', __WEBPACK_IMPORTED_MODULE_3__images_backgrounds_coastal2_jpg___default.a);
 	game.load.spritesheet('hippo1down', __WEBPACK_IMPORTED_MODULE_4__images_sprites_hippo_hippo1_down_png___default.a, 96, 48);
@@ -320,6 +323,9 @@ const SPEED_FAST = 1;
 let text;
 let speed = SPEED_SLOW;
 let speeds = [];
+let buttons = [];
+let moveLeft = false;
+let moveRight = false;
 
 function create() {
 	game.time.advancedTiming = true;
@@ -345,9 +351,9 @@ function create() {
 		boundsAlignH: "center",
 		boundsAlignV: "middle"
 	};
-	text = game.add.text(0, 0, "Choose your character", style);
+	text = game.add.text(0, 0, "Choose your character\n\n\nUse keyboard arrows or\nclick the white arrows on screen", style);
 	text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
-	text.setTextBounds(0, 100, game.width, 100);
+	text.setTextBounds(0, 100, game.width, 300);
 	text.visible = false;
 
 	const speedStyle = Object.assign({}, style, {
@@ -362,6 +368,27 @@ function create() {
 		text.text = 'Yay!';
 	});
 	speeds.push(fast);
+
+	const buttonStyle = Object.assign({}, style, {
+		fontSize: '60px'
+	});
+	const buttonLeft = game.add.text(25, game.world.centerY, "<", buttonStyle);
+	buttonLeft.visible = false;
+	buttonLeft.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+	buttonLeft.anchor.set(0.5);
+	buttonLeft.inputEnabled = true;
+	buttonLeft.events.onInputDown.add(() => moveLeft = true);
+	buttonLeft.events.onInputUp.add(() => moveLeft = false);
+	buttons.push(buttonLeft);
+
+	const buttonRight = game.add.text(game.width - 25, game.world.centerY, ">", buttonStyle);
+	buttonRight.visible = false;
+	buttonRight.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+	buttonRight.anchor.set(0.5);
+	buttonRight.inputEnabled = true;
+	buttonRight.events.onInputDown.add(() => moveRight = true);
+	buttonRight.events.onInputUp.add(() => moveRight = false);
+	buttons.push(buttonRight);
 }
 
 const CHARACTER_CHOICE = 0;
@@ -381,6 +408,7 @@ function showGame() {
 	showBg(showing - 1);
 	text.visible = false;
 	speeds.forEach(s => s.visible = false);
+	buttons.forEach(s => s.visible = true);
 	allCharacters.right.forEach(c => {
 		c.visible = false;
 		c.animations.stop();
@@ -444,10 +472,10 @@ function update() {
 		if (speed === SPEED_FAST) {
 			increment *= 50;
 		}
-		if (is(Phaser.Keyboard.LEFT)) {
+		if (moveLeft || is(Phaser.Keyboard.LEFT)) {
 			player[movement] = player[movement] - increment;
 			walk(axis, movement);
-		} else if (is(Phaser.Keyboard.RIGHT)) {
+		} else if (moveRight || is(Phaser.Keyboard.RIGHT)) {
 			player[movement] = player[movement] + increment;
 			walk(axis, movement);
 		}
