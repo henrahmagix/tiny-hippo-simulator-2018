@@ -1,4 +1,6 @@
 import './lib';
+import './index.css';
+
 import coastal1 from './images/backgrounds/coastal1.jpg';
 import coastal2 from './images/backgrounds/coastal2.jpg';
 import hippo1down from './images/sprites/hippo/hippo1-down.png';

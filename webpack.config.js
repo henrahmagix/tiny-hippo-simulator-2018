@@ -40,6 +40,13 @@ module.exports = {
 				include: APP_DIR,
 			},
 			{
+				test: /\.css$/,
+				use: [
+					'style-loader',
+					'css-loader',
+				]
+			},
+			{
 				test: /\.(png|jpe?g|svg)$/,
 				use: [{
 					loader: 'url-loader',
