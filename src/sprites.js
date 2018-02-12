@@ -73,7 +73,7 @@ export default class {
 	chooseCharacter(done) {
 		this.itemsByDirection.right.forEach((sprite, i) => {
 			sprite.x = (100 * i) + 40;
-			sprite.y = 200;
+			sprite.y = 150;
 			sprite.visible = true;
 			sprite.animations.add('walk');
 			sprite.animations.play('walk', 4, true);

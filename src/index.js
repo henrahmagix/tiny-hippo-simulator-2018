@@ -3,6 +3,7 @@ import './index.css';
 
 import Backgrounds from './backgrounds'
 import Sprites from './sprites'
+import Texts from './texts'
 
 const id = 'game';
 document.body.appendChild(function (id) {
@@ -23,6 +24,7 @@ const bg = new Backgrounds(game);
 const bgs = bg.items;
 const sprites = new Sprites(game);
 const allCharacters = sprites.itemsByDirection;
+const texts = new Texts(game);
 
 function preload() {
 	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -33,10 +35,7 @@ function preload() {
 }
 
 function showBg(position) {
-	if (position >= bgs.length) {
-		console.error(`showBg: bg not found at position ${position}`);
-	}
-	bgs.forEach((bg, i) => bg.visible = (i === position));
+	bgs.forEach((bg, i) => bg.toggle(i === position));
 }
 
 let player;
@@ -48,7 +47,8 @@ const CHARACTER_MOVE_INCREMENT = 1/2;
 const SPEED_SLOW = 0;
 const SPEED_FAST = 1;
 
-let text;
+let text1;
+let text2;
 let speed = SPEED_SLOW;
 let speeds = [];
 let buttons = [];
@@ -62,51 +62,25 @@ function create() {
 	bg.create();
 	sprites.create();
 
-	const style = {
-		fontWeight: "bold",
-		fontSize: "32px",
-		fontFamily: "Helvetica Arial sans-serif",
-		fill: "#fff",
-		boundsAlignH: "center",
-		boundsAlignV: "middle"
-	};
-	text = game.add.text(0, 0, "Choose your character\n\n\nUse keyboard arrows or\nclick the white arrows on screen", style);
-	text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
-	text.setTextBounds(0, 100, game.width, 300);
-	text.visible = false;
+	text1 = texts.big('center', 100, 'Choose your character');
+	text2 = texts.big('center', 300, 'Use keyboard arrows or\nclick the white arrows on screen');
+	// text.setTextBounds(0, 100, game.width, 300);
 
-	const speedStyle = Object.assign({}, style, {
-		fontSize: '24px'
-	});
-	const fast = game.add.text(game.world.centerX + 100, 400, "Go faster?", speedStyle);
-	fast.visible = false;
-	fast.anchor.set(0.5);
-	fast.inputEnabled = true;
-	fast.events.onInputDown.add(text => {
+	const fast = texts.medium(game.world.centerX + 100, 400, 'Go faster?');
+	fast.inputDown(item => {
 		speed = SPEED_FAST;
-		text.text = 'Yay!'
+		item.text = 'Yay!'
 	});
 	speeds.push(fast);
 
-	const buttonStyle = Object.assign({}, style, {
-		fontSize: '60px'
-	});
-	const buttonLeft = game.add.text(25, 450, "<", buttonStyle);
-	buttonLeft.visible = false;
-	buttonLeft.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
-	buttonLeft.anchor.set(0.5);
-	buttonLeft.inputEnabled = true;
-	buttonLeft.events.onInputDown.add(() => moveLeft = true);
-	buttonLeft.events.onInputUp.add(() => moveLeft = false);
+	const buttonLeft = texts.controls(25, 450, '<');
+	buttonLeft.inputDown(() => moveLeft = true);
+	buttonLeft.inputUp(() => moveLeft = false);
 	buttons.push(buttonLeft);
 
-	const buttonRight = game.add.text(game.width - 25, 450, ">", buttonStyle);
-	buttonRight.visible = false;
-	buttonRight.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
-	buttonRight.anchor.set(0.5);
-	buttonRight.inputEnabled = true;
-	buttonRight.events.onInputDown.add(() => moveRight = true);
-	buttonRight.events.onInputUp.add(() => moveRight = false);
+	const buttonRight = texts.controls(game.width - 25, 450, '>');
+	buttonRight.inputDown(() => moveRight = true);
+	buttonRight.inputUp(() => moveRight = false);
 	buttons.push(buttonRight);
 }
 
@@ -117,8 +91,9 @@ let showing;
 function showCharacterChoice() {
 	showing = CHARACTER_CHOICE;
 	showBg(-1);
-	text.visible = true;
-	speeds.forEach(s => s.visible = true);
+	text1.show();
+	text2.show();
+	speeds.forEach(s => s.show());
 	sprites.chooseCharacter(chosen => {
 		player = chosen;
 	});
@@ -127,9 +102,10 @@ function showCharacterChoice() {
 function showGame() {
 	showing = GAME;
 	showBg(showing - 1);
-	text.visible = false;
-	speeds.forEach(s => s.visible = false);
-	buttons.forEach(s => s.visible = true);
+	text1.hide();
+	text2.hide();
+	speeds.forEach(s => s.hide());
+	buttons.forEach(s => s.show());
 	player.visible = true;
 	player.x = 40;
 	player.xFps = player.x;
