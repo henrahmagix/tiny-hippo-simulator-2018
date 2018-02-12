@@ -1,4 +1,4 @@
-import './lib';
+import './phaser';
 import './index.css';
 
 import Backgrounds from './backgrounds'
