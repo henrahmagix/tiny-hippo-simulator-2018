@@ -35,44 +35,102 @@ import hippo8up from './images/sprites/hippo/hippo8-up.png';
 export default class {
 	constructor(game) {
 		this.game = game;
+		this.itemsByDirection = {down: [], left: [], right: [], up: []};
 	}
 
 	preload() {
-		preload(this.game);
+		preload(this.game, 96, 48);
+	}
+
+	create() {
+		this.add('hippo1');
+		this.add('hippo2');
+		this.add('hippo3');
+		this.add('hippo4');
+		this.add('hippo5');
+		this.add('hippo6');
+		this.add('hippo7');
+		this.add('hippo8');
+	}
+
+	add(name) {
+		this.itemsByDirection.down.push(this.makeSprite(`${name}down`));
+		this.itemsByDirection.left.push(this.makeSprite(`${name}left`));
+		this.itemsByDirection.right.push(this.makeSprite(`${name}right`));
+		this.itemsByDirection.up.push(this.makeSprite(`${name}up`));
+	}
+
+	makeSprite(name) {
+		let sprite = this.game.add.sprite(0, 0, name);
+		sprite.visible = false;
+		sprite.frame = 0;
+		sprite.fpsFrame = 0;
+		sprite.xFps = 0;
+		sprite.yFps = 0;
+		return sprite;
+	};
+
+	chooseCharacter(done) {
+		this.itemsByDirection.right.forEach((sprite, i) => {
+			sprite.x = (100 * i) + 40;
+			sprite.y = 200;
+			sprite.visible = true;
+			sprite.animations.add('walk');
+			sprite.animations.play('walk', 4, true);
+			sprite.inputEnabled = true;
+			sprite.events.onInputDown.add(sprite => {
+				this.chosen = sprite;
+				this.itemsByDirection.right.forEach(sprite => {
+					sprite.visible = false;
+					sprite.animations.stop();
+					sprite.frame = 0;
+				});
+				this.chosen.visible = true;
+				done(this.chosen);
+			}, this.game);
+		});
+	}
+
+	changeDirection(sprite, from, to) {
+		let index = this.itemsByDirection[from].indexOf(sprite);
+		let newSprite = this.itemsByDirection[to][index];
+		sprite.visible = false;
+		newSprite.visible = true;
+		return newSprite;
 	}
 }
 
-function preload(game) {
-	game.load.spritesheet('hippo1down', hippo1down, 96, 48);
-	game.load.spritesheet('hippo2down', hippo2down, 96, 48);
-	game.load.spritesheet('hippo3down', hippo3down, 96, 48);
-	game.load.spritesheet('hippo4down', hippo4down, 96, 48);
-	game.load.spritesheet('hippo5down', hippo5down, 96, 48);
-	game.load.spritesheet('hippo6down', hippo6down, 96, 48);
-	game.load.spritesheet('hippo7down', hippo7down, 96, 48);
-	game.load.spritesheet('hippo8down', hippo8down, 96, 48);
-	game.load.spritesheet('hippo1left', hippo1left, 96, 48);
-	game.load.spritesheet('hippo2left', hippo2left, 96, 48);
-	game.load.spritesheet('hippo3left', hippo3left, 96, 48);
-	game.load.spritesheet('hippo4left', hippo4left, 96, 48);
-	game.load.spritesheet('hippo5left', hippo5left, 96, 48);
-	game.load.spritesheet('hippo6left', hippo6left, 96, 48);
-	game.load.spritesheet('hippo7left', hippo7left, 96, 48);
-	game.load.spritesheet('hippo8left', hippo8left, 96, 48);
-	game.load.spritesheet('hippo1right', hippo1right, 96, 48);
-	game.load.spritesheet('hippo2right', hippo2right, 96, 48);
-	game.load.spritesheet('hippo3right', hippo3right, 96, 48);
-	game.load.spritesheet('hippo4right', hippo4right, 96, 48);
-	game.load.spritesheet('hippo5right', hippo5right, 96, 48);
-	game.load.spritesheet('hippo6right', hippo6right, 96, 48);
-	game.load.spritesheet('hippo7right', hippo7right, 96, 48);
-	game.load.spritesheet('hippo8right', hippo8right, 96, 48);
-	game.load.spritesheet('hippo1up', hippo1up, 96, 48);
-	game.load.spritesheet('hippo2up', hippo2up, 96, 48);
-	game.load.spritesheet('hippo3up', hippo3up, 96, 48);
-	game.load.spritesheet('hippo4up', hippo4up, 96, 48);
-	game.load.spritesheet('hippo5up', hippo5up, 96, 48);
-	game.load.spritesheet('hippo6up', hippo6up, 96, 48);
-	game.load.spritesheet('hippo7up', hippo7up, 96, 48);
-	game.load.spritesheet('hippo8up', hippo8up, 96, 48);
+function preload(game, width, height) {
+	game.load.spritesheet('hippo1down', hippo1down, width, height);
+	game.load.spritesheet('hippo2down', hippo2down, width, height);
+	game.load.spritesheet('hippo3down', hippo3down, width, height);
+	game.load.spritesheet('hippo4down', hippo4down, width, height);
+	game.load.spritesheet('hippo5down', hippo5down, width, height);
+	game.load.spritesheet('hippo6down', hippo6down, width, height);
+	game.load.spritesheet('hippo7down', hippo7down, width, height);
+	game.load.spritesheet('hippo8down', hippo8down, width, height);
+	game.load.spritesheet('hippo1left', hippo1left, width, height);
+	game.load.spritesheet('hippo2left', hippo2left, width, height);
+	game.load.spritesheet('hippo3left', hippo3left, width, height);
+	game.load.spritesheet('hippo4left', hippo4left, width, height);
+	game.load.spritesheet('hippo5left', hippo5left, width, height);
+	game.load.spritesheet('hippo6left', hippo6left, width, height);
+	game.load.spritesheet('hippo7left', hippo7left, width, height);
+	game.load.spritesheet('hippo8left', hippo8left, width, height);
+	game.load.spritesheet('hippo1right', hippo1right, width, height);
+	game.load.spritesheet('hippo2right', hippo2right, width, height);
+	game.load.spritesheet('hippo3right', hippo3right, width, height);
+	game.load.spritesheet('hippo4right', hippo4right, width, height);
+	game.load.spritesheet('hippo5right', hippo5right, width, height);
+	game.load.spritesheet('hippo6right', hippo6right, width, height);
+	game.load.spritesheet('hippo7right', hippo7right, width, height);
+	game.load.spritesheet('hippo8right', hippo8right, width, height);
+	game.load.spritesheet('hippo1up', hippo1up, width, height);
+	game.load.spritesheet('hippo2up', hippo2up, width, height);
+	game.load.spritesheet('hippo3up', hippo3up, width, height);
+	game.load.spritesheet('hippo4up', hippo4up, width, height);
+	game.load.spritesheet('hippo5up', hippo5up, width, height);
+	game.load.spritesheet('hippo6up', hippo6up, width, height);
+	game.load.spritesheet('hippo7up', hippo7up, width, height);
+	game.load.spritesheet('hippo8up', hippo8up, width, height);
 }

@@ -20,7 +20,9 @@ const game = new Phaser.Game(1108, 600, Phaser.AUTO, id, {
 });
 
 const bg = new Backgrounds(game);
+const bgs = bg.items;
 const sprites = new Sprites(game);
+const allCharacters = sprites.itemsByDirection;
 
 function preload() {
 	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -28,17 +30,6 @@ function preload() {
 
 	bg.preload();
 	sprites.preload();
-}
-
-const bgs = [];
-
-function addBg(spriteName) {
-	let sprite = game.add.sprite(0, 0, spriteName);
-	sprite.height = game.height;
-	sprite.width = game.width;
-	sprite.visible = false;
-	bgs.push(sprite);
-	return sprite;
 }
 
 function showBg(position) {
@@ -50,39 +41,9 @@ function showBg(position) {
 
 let player;
 let direction = 'right';
-let allCharacters = {
-	down: [],
-	left: [],
-	right: [],
-	up: [],
-};
 
 const CHARACTER_FRAME_INCREMENT = 1 / 4;
 const CHARACTER_MOVE_INCREMENT = 1/2;
-
-function makeSprite(x, y, name) {
-	let sprite = game.add.sprite(x, y, name);
-	sprite.visible = false;
-	sprite.frame = 0;
-	sprite.fpsFrame = 0;
-	sprite.xFps = 0;
-	sprite.yFps = 0;
-	return sprite;
-};
-
-function addWalking(x, y, name) {
-	allCharacters.down.push(makeSprite(x, y, `${name}down`));
-	allCharacters.left.push(makeSprite(x, y, `${name}left`));
-	allCharacters.up.push(makeSprite(x, y, `${name}up`));
-
-	let sprite = makeSprite(x, y, `${name}right`);
-	sprite.animations.add('walk');
-	sprite.animations.play('walk', 4, true);
-	sprite.inputEnabled = true;
-	sprite.events.onInputDown.add(sprite => player = sprite, this);
-	allCharacters.right.push(sprite);
-	return sprite;
-}
 
 const SPEED_SLOW = 0;
 const SPEED_FAST = 1;
@@ -98,17 +59,8 @@ function create() {
 	game.time.advancedTiming = true;
 	game.time.desiredFps = 12;
 
-	addBg('page1');
-	addBg('page2');
-
-	addWalking(40, 200, 'hippo1');
-	addWalking(140, 200, 'hippo2');
-	addWalking(240, 200, 'hippo3');
-	addWalking(340, 200, 'hippo4');
-	addWalking(440, 200, 'hippo5');
-	addWalking(540, 200, 'hippo6');
-	addWalking(640, 200, 'hippo7');
-	addWalking(740, 200, 'hippo8');
+	bg.create();
+	sprites.create();
 
 	const style = {
 		fontWeight: "bold",
@@ -167,7 +119,9 @@ function showCharacterChoice() {
 	showBg(-1);
 	text.visible = true;
 	speeds.forEach(s => s.visible = true);
-	allCharacters.right.forEach(c => c.visible = true);
+	sprites.chooseCharacter(chosen => {
+		player = chosen;
+	});
 }
 
 function showGame() {
@@ -176,11 +130,6 @@ function showGame() {
 	text.visible = false;
 	speeds.forEach(s => s.visible = false);
 	buttons.forEach(s => s.visible = true);
-	allCharacters.right.forEach(c => {
-		c.visible = false;
-		c.animations.stop();
-		c.frame = 0;
-	});
 	player.visible = true;
 	player.x = 40;
 	player.xFps = player.x;
@@ -188,10 +137,7 @@ function showGame() {
 }
 
 function swapCharacter(from, to) {
-	let spritePos = allCharacters[from].indexOf(player);
-	player.visible = false;
-	player = allCharacters[to][spritePos];
-	player.visible = true;
+	player = sprites.changeDirection(player, from, to);
 }
 
 function walk(axis, movement) {
